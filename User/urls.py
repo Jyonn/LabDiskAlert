@@ -11,5 +11,5 @@ urlpatterns = [
     path('email/captcha', views.UserEmailCaptchaView.as_view()),
     path('phone/captcha', views.UserPhoneCaptchaView.as_view()),
     path('bark/captcha', views.UserBarkCaptchaView.as_view()),
-    path('<str:name>', views.UserNameView.as_view()),
+    path('@<str:name>', views.UserNameView.as_view()),
 ]

@@ -92,7 +92,7 @@ class Host(models.Model):
         hostdisk_list = self.hostdisk_set.all()
         if not executor or not executor.is_admin:
             hostdisk_list = hostdisk_list.filter(listen=True)
-        return hostdisk_list.dict(HostDisk.d)
+        return hostdisk_list.dict(lambda x: x.d(executor=executor))
 
     def get_users(self):
         return self.hostdisk_set.all().dict(HostDisk.d)
