@@ -1,3 +1,5 @@
+from oba import Obj
+
 from Host.models import HostDisk, DiskUser
 from LabDiskAlert.global_settings import Global
 from User.models import User
@@ -5,24 +7,26 @@ from utils.alert import alert
 
 
 class DiskLog:
-    def __init__(self, disk: HostDisk, percentage: int, folders: dict):
+    def __init__(self, disk: HostDisk, percentage: int, folders):
         self.disk = disk
         self.percentage = percentage
-        self.folders = folders
+        self.folders = Obj.raw(folders)
+        self.folders = {item['path']: item['percentage'] for item in folders}
 
         self.logging_data = dict(
             percentage=percentage,
-            folders=folders,
+            folders=self.folders,
         )
 
         # disk level filter
         if not disk.listen:
             return
 
+        print(self.logging_data)
         self.disk.logging(self.logging_data)
 
         self.detect_user()
-        user_list = self.get_alert_user_list()
+        user_list = self.get_alert_user_list() or []
         self.attempt_alert(user_list)
 
     def detect_user(self):

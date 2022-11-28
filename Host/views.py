@@ -75,6 +75,17 @@ class HostDiskView(views.View):
 
 class HostDiskNameView(views.View):
     @staticmethod
+    @Auth.require_user()
+    @Analyse.r(a=[HostP.name_getter, HostP.disk_name])
+    def get(r):
+        """
+        获取主机磁盘信息
+        GET /api/host/:name/disk/:disk_name
+        """
+        disk = HostDisk.get_by_host_name(host=r.d.host, name=r.d.disk_name)
+        return disk.d(executor=r.user)
+
+    @staticmethod
     @Auth.require_user(admin=True)
     @Analyse.r(a=[HostP.name_getter, HostP.disk_name], b=[HostP.disk_listen])
     def put(r):
@@ -136,7 +147,10 @@ class ReportDiskView(views.View):
 class ReportDiskMemoryView(views.View):
     @staticmethod
     @Auth.require_host()
-    @Analyse.r(b=[HostP.disk_name, 'disk_percentage', PDict(name='folders').set_fields('path', 'percentage')])
+    @Analyse.r(b=[
+        HostP.disk_name, 'disk_percentage',
+        PList(name='folders').set_child(PDict(name='folder').set_fields('path', 'percentage')),
+    ])
     def post(r):
         """
         磁盘占用预警

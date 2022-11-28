@@ -169,7 +169,7 @@ class HostDisk(models.Model):
 
     def logging(self, logging_data):
         self.last_logging_time = datetime.datetime.now()
-        self.last_logging_data = json.dumps(logging_data['data'], ensure_ascii=False)
+        self.last_logging_data = json.dumps(logging_data, ensure_ascii=False)
         self.save()
         return self
 
@@ -226,5 +226,5 @@ class HostP:
     disk_name, disk_listen = HostDisk.P('name', 'listen')
     user_bind, user_alert_percentage = DiskUser.P('bind', 'alert_percentage')
 
-    name_getter = name.rename('name', yield_name='host').process(Host.get_host_by_name)
+    name_getter = name.clone().rename('name', yield_name='host').process(Host.get_host_by_name)
     disk_name = disk_name.rename('disk_name')

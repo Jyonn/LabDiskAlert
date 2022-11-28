@@ -386,5 +386,5 @@ class UserP:
     name, password, email, phone, bark = User.P('name', 'password', 'email', 'phone', 'bark')
     phone_captcha, email_captcha, bark_captcha = User.P('phone_captcha', 'email_captcha', 'bark_captcha')
 
-    name_getter = name.rename('name', yield_name='user').process(User.get_user_by_name)
+    name_getter = name.clone().rename('name', yield_name='user').process(User.get_user_by_name)
     silent = P('silent').process(bool)

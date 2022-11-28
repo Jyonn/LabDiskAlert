@@ -27,6 +27,7 @@ class Global:
         token=NOTIFICATOR_TOKEN,
         host=NOTIFICATOR_HOST,
     )
+    # notificator = None
 
 
 NetPacker.set_mode(debug=True)
