@@ -22,6 +22,11 @@ class DiskLog:
         if not disk.listen:
             return
 
+        if self.disk.host.silent:
+            return
+        if self.disk.host.alert_percentage > self.percentage:
+            return
+
         self.disk.logging(self.logging_data)
 
         self.detect_user()
@@ -36,12 +41,6 @@ class DiskLog:
             DiskUser.get_by_disk_user(self.disk, user)
 
     def get_alert_user_list(self):
-        # host level filter
-        if self.disk.host.silent:
-            return
-        if self.disk.host.alert_percentage > self.percentage:
-            return
-
         # diskuser level filter
         user_list = []
         for user_name in self.folders:
