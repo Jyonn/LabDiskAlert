@@ -22,7 +22,6 @@ class DiskLog:
         if not disk.listen:
             return
 
-        print(self.logging_data)
         self.disk.logging(self.logging_data)
 
         self.detect_user()
@@ -50,7 +49,7 @@ class DiskLog:
                 continue
             user = User.get_user_by_name(user_name)
             diskuser = DiskUser.get_by_disk_user(self.disk, user)
-            if diskuser.bind and diskuser.alert_percentage > self.folders[diskuser.user.name]:
+            if diskuser.bind and diskuser.alert_percentage <= self.folders[diskuser.user.name]:
                 user_list.append(diskuser)
 
         return user_list
@@ -79,17 +78,24 @@ class DiskLog:
             for user_name in self.folders:
                 email_message += f'{user_name}：{self.folders[user_name]}%\n'
 
-            email_success_flag = False
+            admin_success_flag = False
             if admin.email_activated:
                 try:
                     Global.notificator.mail(admin.email, email_message, subject=title, appellation=admin.name)
-                    email_success_flag = True
-                except Exception:
+                    admin_success_flag = True
+                except Exception as e:
                     pass
 
-            if not email_success_flag:
+            if admin.bark_activated:
+                try:
+                    Global.notificator.bark(admin.bark, message, title=title)
+                    admin_success_flag = True
+                except Exception as e:
+                    pass
+
+            if not admin_success_flag:
                 try:
                     Global.notificator.sms(admin.phone, message)
-                except Exception:
+                except Exception as e:
                     pass
 

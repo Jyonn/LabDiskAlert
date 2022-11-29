@@ -159,6 +159,7 @@ class ReportDiskMemoryView(views.View):
         disk = HostDisk.get_by_host_name(host=r.host, name=r.d.disk_name)
 
         DiskLog(disk=disk, percentage=r.d.disk_percentage, folders=r.d.folders)
+        return 'ok'
 
 
 class UserDiskView(views.View):

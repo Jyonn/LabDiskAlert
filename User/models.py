@@ -5,6 +5,7 @@ import string
 from SmartDjango import models, E
 from SmartDjango.models import CREnum
 from SmartDjango.p import P
+from django.db.models import Q
 from django.utils.crypto import get_random_string
 
 from LabDiskAlert.global_settings import Global
@@ -365,7 +366,7 @@ class User(models.Model):
 
     @classmethod
     def get_admins(cls):
-        return cls.objects.filter(admin=True)
+        return cls.objects.filter(Q(admin=True) | Q(id=cls.ROOT_ID))
 
     def remove(self, executor: 'User'):
         if self.is_root:
